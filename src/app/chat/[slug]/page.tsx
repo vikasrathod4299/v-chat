@@ -1,8 +1,8 @@
 "use client";
 import Navbar from "@/components/Navbar";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+
 import { Input } from "@/components/ui/input";
-import { Send, SendHorizonal } from "lucide-react";
+import { SendHorizonal } from "lucide-react";
 
 import React, { FC } from "react";
 

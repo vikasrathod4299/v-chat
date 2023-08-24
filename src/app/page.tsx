@@ -1,8 +1,17 @@
 "use client";
 import ChatBox from "@/components/ChatBox";
 import Navbar from "@/components/Navbar";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
+  const router = useRouter();
+  const { user } = useAuth();
+  if (!user) {
+    router.push("/sign-in");
+    return;
+  }
   return (
     <div className="flex flex-col h-screen">
       <Navbar list={true} />
