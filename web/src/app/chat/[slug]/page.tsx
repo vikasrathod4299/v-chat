@@ -13,6 +13,7 @@ interface ChatProps {
 }
 
 const Chat: FC<ChatProps> = ({ params }) => {
+  const { slug } = params;
   const messages = [
     {
       senderInitials: "CN",

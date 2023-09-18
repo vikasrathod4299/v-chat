@@ -3,6 +3,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import AuthProvider from "@/hooks/useAuth";
+import Provider from "@/components/Provider";
+import SocketProvider from "@/hooks/useSocket";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,11 +26,15 @@ export default function RootLayout({
         inter.className
       )}
     >
-      <AuthProvider>
-        <body className={"min-h-screen bg-slate-50 antialiased"}>
-          <div className="max-w-7xl mx-auto h-full">{children}</div>
-        </body>
-      </AuthProvider>
+      <SocketProvider>
+        <Provider>
+          <AuthProvider>
+            <body className={"min-h-screen bg-slate-50 antialiased"}>
+              <div className="max-w-7xl mx-auto h-full">{children}</div>
+            </body>
+          </AuthProvider>
+        </Provider>
+      </SocketProvider>
     </html>
   );
 }

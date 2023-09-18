@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useMutation } from "react-query";
+import axios from "axios";
 
 interface registerInterface {
   first_name: string;
@@ -11,7 +13,7 @@ interface registerInterface {
   username: string;
   email: string;
   password: string;
-  confirm_password: string;
+  confirm_password?: string;
 }
 
 const SignUp = () => {
@@ -21,7 +23,21 @@ const SignUp = () => {
     formState: { errors },
   } = useForm<registerInterface>();
 
-  const onSubmit = (data: registerInterface) => {};
+  const { mutate: signUp, isLoading } = useMutation({
+    mutationFn: async (data: registerInterface) => {
+      const { data: user } = await axios.post(
+        "http://localhost:3001/api/auth/register",
+        data
+      );
+      return user;
+    },
+  });
+
+  const onSubmit = (data: registerInterface) => {
+    const { confirm_password, ...rest } = data;
+
+    signUp(rest);
+  };
 
   return (
     <div className="flex h-screen justify-center items-center">
@@ -100,8 +116,13 @@ const SignUp = () => {
         )}
 
         <div className="my-4 text-center">
-          <Button className=" w-full shadow-lg rounded-md" variant={"default"}>
-            Log In
+          <Button
+            type="submit"
+            isLoading={isLoading}
+            className=" w-full shadow-lg rounded-md"
+            variant={"default"}
+          >
+            Sign up
           </Button>
           <p className=" mt-4 text-sm">
             Already have an account?

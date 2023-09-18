@@ -1,21 +1,44 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/hooks/useAuth";
+import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useMutation } from "react-query";
 interface loginInterface {
   username: string;
   password: string;
 }
 
 const SignIn = () => {
+  const router = useRouter();
+  const { setUser } = useAuth();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<loginInterface>();
-  const onSubmit = (data: loginInterface) => {};
+
+  const { mutate: signIn, isLoading } = useMutation({
+    mutationFn: async (data: loginInterface) => {
+      const { data: user } = await axios.post(
+        "http://localhost:3001/api/auth/login",
+        data
+      );
+      setUser(user.data);
+    },
+    onSuccess: () => {
+      router.push("/");
+    },
+  });
+
+  const onSubmit = (data: loginInterface) => {
+    signIn(data);
+  };
+
   return (
     <div className="flex h-screen justify-center items-center">
       <form
@@ -44,7 +67,11 @@ const SignIn = () => {
           </span>
         )}
         <div className="my-4 text-center">
-          <Button className=" w-full shadow-lg rounded-md" variant={"default"}>
+          <Button
+            isLoading={isLoading}
+            className=" w-full shadow-lg rounded-md"
+            variant={"default"}
+          >
             Log In
           </Button>
           <p className="mt-4 text-sm">
