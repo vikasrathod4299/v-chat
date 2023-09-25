@@ -2,7 +2,7 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SendHorizonal, SendIcon, VideoIcon } from "lucide-react";
+import { SendHorizonal, VideoIcon } from "lucide-react";
 import React, { FC } from "react";
 
 interface ChatPageProps {}
@@ -87,7 +87,7 @@ const messages = [
 
 const Chat: FC<ChatPageProps> = ({}) => {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen ">
       <div className="fixed z-50 w-full flex bg-white/10 px-6 py-4 justify-between items-center shadow-sm backdrop-blur-md border border-white/20">
         <div className="flex items-center gap-3">
           <Avatar>
