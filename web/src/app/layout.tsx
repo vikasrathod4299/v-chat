@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import AuthProvider from "@/hooks/useAuth";
 import Provider from "@/components/Provider";
-import SocketProvider from "@/hooks/useSocket";
+import { SocketProvider } from "@/hooks/useSocket";
 
 const inter = Inter({ subsets: ["latin"] });
 

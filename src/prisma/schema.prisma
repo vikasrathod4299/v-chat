@@ -26,7 +26,7 @@ model Chat {
   id         Int       @id @default(autoincrement())
   messages   Message[]
   participants User[]  @relation("UserToChat")
-}
+} 
 
 model Message {
   id        Int      @id @default(autoincrement())

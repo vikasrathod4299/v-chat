@@ -1,12 +1,12 @@
-const http = require("http");
+require("dotenv").config();
+import http from "http";
 import express, { Request, Response } from "express";
-const app = express();
-const cors = require("cors");
-const authRoute = require("./routes/auth");
+import cors from "cors";
 import { verifyToken } from "./middlewares/authentication";
 import { db } from "./db";
 import { Server } from "socket.io";
-
+import { initializeSocket } from "./socket";
+const app = express();
 const server = http.createServer(app);
 
 const io = new Server(server, {
@@ -16,15 +16,15 @@ const io = new Server(server, {
   },
 });
 
+const authRoute = require("./routes/auth");
+
 app.use(cors());
 
 app.use(express.json());
 
 app.use("/api/auth", authRoute);
 
-io.on("connection", (socket) => {
-  console.log(socket.id);
-});
+initializeSocket(io);
 
 interface CustomRequest extends Request {
   user?: any;

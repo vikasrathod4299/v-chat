@@ -2,15 +2,17 @@
 import ChatBox from "@/components/ChatBox";
 import Navbar from "@/components/Navbar";
 import { useAuth } from "@/hooks/useAuth";
+import { useSocket } from "@/hooks/useSocket";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useQuery } from "react-query";
 
 export default function Home() {
   const router = useRouter();
   const { user } = useAuth();
   const userId: string | null = user?.id;
-
+  const { socket } = useSocket();
   const { data: chats } = useQuery(
     ["allChats", userId],
     async () => {
@@ -23,6 +25,12 @@ export default function Home() {
       enabled: !!user,
     }
   );
+
+  useEffect(() => {
+    socket?.on("connected", () => {
+      console.log("You are connected to server!😁");
+    });
+  }, [socket]);
 
   if (!user) {
     router.push("/sign-in");

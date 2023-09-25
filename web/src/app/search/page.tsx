@@ -26,7 +26,6 @@ const SearchPage = () => {
       enabled: !!input,
     }
   );
-  console.log(users);
 
   return (
     <div className="h-screen w-full">

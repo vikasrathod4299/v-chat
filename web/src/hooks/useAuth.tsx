@@ -1,6 +1,6 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
-
+import { LocalStorage } from "@/lib/utils";
 type authContextType = {
   user: any;
   setUser: React.Dispatch<React.SetStateAction<any>>;
@@ -8,12 +8,11 @@ type authContextType = {
 const authContext = createContext<authContextType | null>(null);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const storedUser = localStorage.getItem("user");
-  const initailUser = storedUser ? JSON.parse(storedUser) : null;
-  const [user, setUser] = useState(initailUser);
+  const storedUser = LocalStorage.get("user");
+  const [user, setUser] = useState(storedUser);
 
   useEffect(() => {
-    localStorage.setItem("user", JSON.stringify(user));
+    LocalStorage.set("user", user);
   }, [user]);
 
   return (
