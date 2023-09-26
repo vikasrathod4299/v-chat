@@ -1,16 +1,45 @@
 "use client";
 import React, { FC } from "react";
 import { Avatar, AvatarFallback } from "./ui/avatar";
+import { useRouter } from "next/navigation";
+import { useQuery } from "react-query";
+import { useAuth } from "@/hooks/useAuth";
+import axios, { AxiosResponse } from "axios";
 
 interface ChatBoxProps {
-  id?: string;
-  username?: string;
-  chat?: any;
+  id?: number;
+  userId?: number;
 }
 
-const ChatBox: FC<ChatBoxProps> = ({ id, username, chat }) => {
+const ChatBox: FC<ChatBoxProps> = ({ id, userId }) => {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const { refetch } = useQuery(
+    ["chats", userId, user?.id],
+    async () => {
+      return await axios.get(`http://localhost:3001/api/chat/${userId}`, {
+        headers: { authorization: user?.access_token },
+      });
+    },
+    {
+      onSuccess: (data: AxiosResponse) => {
+        console.log(data.data);
+        router.push(`chat/${data.data.id}`);
+      },
+      enabled: false,
+    }
+  );
+
+  const handleClick = async () => {
+    if (id) {
+      router.push(`chat/${id}`);
+    } else {
+      refetch();
+    }
+  };
   return (
-    <div>
+    <div onClick={handleClick}>
       <div className="flex w-full h-18 gap-x-4 items-center m-2">
         <Avatar className="h-14 w-14">
           <AvatarFallback className=" text-sm text-white font-bold bg-pink-700">

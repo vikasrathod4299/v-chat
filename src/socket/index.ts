@@ -1,4 +1,5 @@
 require("dotenv").config();
+import { Request } from "express";
 import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import { Server, Socket } from "socket.io";
 
@@ -21,7 +22,7 @@ export const initializeSocket = (io: Server) => {
       )) as payload;
 
       socket.join(user.id.toString());
-      socket.emit("connected");
+      socket.emit("connected", user.username);
       console.log("User is connected ⚡ userId:" + user.id);
       socket.on("disconnect", () => {
         console.log("User is disconnected 🚫 userId:" + user.id);
@@ -32,3 +33,6 @@ export const initializeSocket = (io: Server) => {
     }
   });
 };
+// const emitSocketEvent = (req:Request, roomId, event, payload) => {
+//   req.app.get("io").in(roomId).emit(event, payload);
+// };

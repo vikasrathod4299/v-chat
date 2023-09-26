@@ -6,10 +6,12 @@ const prisma = new PrismaClient();
 
 router.post("/login", async (req: Request, res: Response) => {
   const { username, password } = req.body;
+
   try {
     const user = await prisma.user.findFirst({
       where: { username: username, password: password },
     });
+    console.log(user);
 
     if (user) {
       const access_token = jwt.sign(
@@ -35,7 +37,7 @@ router.post("/login", async (req: Request, res: Response) => {
       }
       res.setHeader("access-token", access_token);
       res.status(200).json({
-        data: { access_token, user },
+        data: { access_token, ...user },
         message: "You are logged in successfully!",
       });
     } else {

@@ -2,6 +2,9 @@ import clsx from "clsx";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Provider from "@/components/Provider";
+import AuthProvider from "@/hooks/useAuth";
+import SocketProvider from "@/hooks/useSocket";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +20,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={clsx(inter.className, "h-screen")}>{children}</body>
+      <AuthProvider>
+        <Provider>
+          <SocketProvider>
+            <body className={clsx(inter.className, "h-screen")}>
+              {children}
+            </body>
+          </SocketProvider>
+        </Provider>
+      </AuthProvider>
     </html>
   );
 }

@@ -30,31 +30,27 @@ interface CustomRequest extends Request {
   user?: any;
 }
 
-app.get(
-  "/api/chats",
-  verifyToken,
-  async (req: CustomRequest, res: Response) => {
-    const user = req.user;
-    try {
-      const chats = await db.chat.findMany({
-        where: {
-          participants: {
-            some: {
-              id: user.id,
-            },
+app.get("/api/chat", verifyToken, async (req: CustomRequest, res: Response) => {
+  const user = req.user;
+  try {
+    const chats = await db.chat.findMany({
+      where: {
+        participants: {
+          some: {
+            id: user.id,
           },
         },
-        include: {
-          participants: true,
-        },
-      });
+      },
+      include: {
+        participants: true,
+      },
+    });
 
-      res.status(200).json(chats);
-    } catch (err) {
-      res.status(500).json({ message: "Somthing went wrong!" });
-    }
+    res.status(200).json(chats);
+  } catch (err) {
+    res.status(500).json({ message: "Somthing went wrong!" });
   }
-);
+});
 
 app.get(
   "/api/chat/:otherUserId",
@@ -79,6 +75,19 @@ app.get(
             },
           ],
         },
+        include: {
+          messages: true,
+          participants: {
+            select: {
+              id: true,
+              first_name: true, // Include the fields you want to retrieve
+              last_name: true,
+              username: true,
+              email: true,
+              // Add more fields as needed
+            },
+          },
+        },
       });
 
       if (chat.length > 0) {
@@ -96,13 +105,12 @@ app.get(
       }
     } catch (err) {
       console.log(err);
-
       res.status(500).json({ message: "Somthing went wrong!" });
     }
   }
 );
 
-app.get("/api/searchUser/:name", async (req: Request, res: Response) => {
+app.get("/api/user/searchUser/:name", async (req: Request, res: Response) => {
   const { name } = req.params;
   try {
     if (name) {
