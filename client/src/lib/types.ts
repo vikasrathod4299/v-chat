@@ -1,5 +1,7 @@
+import { type } from "os";
+
 interface User {
-  id: string;
+  id: number;
   first_name: string;
   last_name: string;
   email: string;
@@ -18,4 +20,12 @@ type LoginUser = {
   password: string;
 };
 
-export { type RegisterUser, type LoginUser, type User };
+type Message = {
+  id: number;
+  content: string;
+  createdAt: Date;
+  userId: number;
+  chatId: number;
+};
+
+export { type RegisterUser, type LoginUser, type User, type Message };

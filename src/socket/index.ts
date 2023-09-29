@@ -33,6 +33,17 @@ export const initializeSocket = (io: Server) => {
     }
   });
 };
-// const emitSocketEvent = (req:Request, roomId, event, payload) => {
-//   req.app.get("io").in(roomId).emit(event, payload);
-// };
+export const emitSocketEvent = (
+  req: Request,
+  roomId: number,
+  event: any,
+  payload: any
+) => {
+  const io = req.app.get("io");
+  if (io) {
+    console.log(`Event ${event} is emited in roomID:${roomId.toString()}`);
+    req.app.get("io").in(roomId.toString()).emit(event, payload);
+  } else {
+    console.log("No IO");
+  }
+};

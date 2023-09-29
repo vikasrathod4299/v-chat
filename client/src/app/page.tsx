@@ -1,64 +1,57 @@
 "use client";
-import ChatBox from "@/components/Chatbox";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import ChatList from "@/components/ChatList";
+import Navbar from "@/components/Navbar";
 import { useAuth } from "@/hooks/useAuth";
 import { useSocket } from "@/hooks/useSocket";
-import axios from "axios";
-import { Search } from "lucide-react";
-import Link from "next/link";
+import { getAllchats } from "@/lib/apiCalls";
+import { User } from "@/lib/types";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { useQuery } from "react-query";
+import { useCallback, useEffect } from "react";
+import { useQuery, useQueryClient } from "react-query";
 
 export default function Home() {
   const { user } = useAuth();
   const { socket } = useSocket();
   const router = useRouter();
+  const queryClient = useQueryClient();
 
-  const { data: chats } = useQuery(
-    ["chats"],
-    async () => {
-      return await axios.get("http://localhost:3001/api/chat", {
-        headers: { authorization: user?.access_token },
-      });
+  const { data: chats } = useQuery(["chats"], getAllchats, {
+    enabled: !!user,
+  });
+
+  const onConnect = (data: string) => {
+    console.log(`Hey ${data}, you are conneted to v-chat`);
+  };
+
+  const newChat = useCallback(
+    (data: { id: number; participant: Array<User> }) => {
+      if (chats?.data) {
+        queryClient.setQueryData("chats", {
+          ...chats,
+          data: [...chats.data, data],
+        });
+      }
     },
-    {
-      enabled: !!user,
-    }
+    [queryClient, chats]
   );
 
   useEffect(() => {
-    socket?.on("connected", (data) => {
-      console.log(`Hey ${data}, you are conneted to v-chat`);
-    });
-  }, [socket]);
+    if (!socket) return;
+    socket?.on("connected", onConnect);
+    socket?.on("NewChat", newChat);
+  }, [socket, newChat]);
 
   if (!user) {
     router.push("/sign-in");
     return;
   }
 
+  console.log(chats);
+
   return (
     <main className="flex h-screen flex-col md:container">
-      <div className="fixed z-50 w-full flex bg-white-300/10 px-6 py-4 justify-between items-center shadow-sm backdrop-blur-md border border-white/20">
-        <Link href={"profile"}>
-          <Avatar>
-            <AvatarFallback className="bg-green-500 text-white">
-              {user.first_name[0].toUpperCase()}
-              {user.last_name[0].toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-        </Link>
-        <div className="underline text-xl font-bold">LOGO</div>
-        <div className="cursor-pointer" onClick={() => router.push("search")}>
-          <Search />
-        </div>
-      </div>
-      <div className="min-h-full overflow-y-auto">
-        {chats?.data?.map((item: any) => {
-          return <ChatBox key={item} id={item.id} />;
-        })}
-      </div>
+      <Navbar isMe={true} userDetails={user} />
+      <ChatList chats={chats?.data} />
     </main>
   );
 }

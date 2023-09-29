@@ -59,9 +59,7 @@ router.post("/register", async (req: Request, res: Response) => {
     console.log(user);
 
     if (user) {
-      res
-        .status(409)
-        .json({ message: "Account is already assosietd with this email!" });
+      res.status(409).json("Account is already assosietd with this email!");
     }
 
     const newUser = await prisma.user.create({ data: req.body });
@@ -71,7 +69,7 @@ router.post("/register", async (req: Request, res: Response) => {
     });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Somthing went wrong!" });
+    res.status(500).json("Somthing went wrong!");
   }
 });
 

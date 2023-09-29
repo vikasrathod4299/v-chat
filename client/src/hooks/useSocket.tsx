@@ -25,7 +25,7 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const user = LocalStorage.get("user");
     if (user) {
-      const socket = socketio("http://localhost:3001", {
+      const socket = socketio("http://192.168.211.136:3001", {
         withCredentials: true,
         auth: {
           access_token: user.access_token,

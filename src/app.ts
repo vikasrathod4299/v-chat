@@ -1,9 +1,7 @@
 require("dotenv").config();
 import http from "http";
-import express, { Request, Response } from "express";
+import express from "express";
 import cors from "cors";
-import { verifyToken } from "./middlewares/authentication";
-import { db } from "./db";
 import { Server } from "socket.io";
 import { initializeSocket } from "./socket";
 const app = express();
@@ -15,115 +13,22 @@ const io = new Server(server, {
     credentials: true,
   },
 });
+app.set("io", io);
 
-const authRoute = require("./routes/auth");
+const authRoute = require("./routes/auth.routes");
+const chatRoute = require("./routes/chat.routes");
+const userRoute = require("./routes/user.routes");
+const messageRoute = require("./routes/message.routes");
 
 app.use(cors());
 
 app.use(express.json());
 
-app.use("/api/auth", authRoute);
-
 initializeSocket(io);
 
-interface CustomRequest extends Request {
-  user?: any;
-}
-
-app.get("/api/chat", verifyToken, async (req: CustomRequest, res: Response) => {
-  const user = req.user;
-  try {
-    const chats = await db.chat.findMany({
-      where: {
-        participants: {
-          some: {
-            id: user.id,
-          },
-        },
-      },
-      include: {
-        participants: true,
-      },
-    });
-
-    res.status(200).json(chats);
-  } catch (err) {
-    res.status(500).json({ message: "Somthing went wrong!" });
-  }
-});
-
-app.get(
-  "/api/chat/:otherUserId",
-  verifyToken,
-  async (req: CustomRequest, res: Response) => {
-    try {
-      const { otherUserId } = req.params;
-      const { id: userId } = req.user;
-
-      const chat = await db.chat.findMany({
-        where: {
-          AND: [
-            {
-              participants: {
-                some: { id: userId },
-              },
-            },
-            {
-              participants: {
-                some: { id: parseInt(otherUserId) },
-              },
-            },
-          ],
-        },
-        include: {
-          messages: true,
-          participants: {
-            select: {
-              id: true,
-              first_name: true, // Include the fields you want to retrieve
-              last_name: true,
-              username: true,
-              email: true,
-              // Add more fields as needed
-            },
-          },
-        },
-      });
-
-      if (chat.length > 0) {
-        res.status(200).json(chat[0]);
-      } else {
-        const newChat = await db.chat.create({
-          data: {
-            participants: {
-              connect: [{ id: userId }, { id: parseInt(otherUserId) }],
-            },
-          },
-        });
-
-        res.status(200).json(newChat);
-      }
-    } catch (err) {
-      console.log(err);
-      res.status(500).json({ message: "Somthing went wrong!" });
-    }
-  }
-);
-
-app.get("/api/user/searchUser/:name", async (req: Request, res: Response) => {
-  const { name } = req.params;
-  try {
-    if (name) {
-      const data = await db.user.findMany({
-        where: { username: { contains: name } },
-      });
-      res.status(200).json({ message: "Found users!", data });
-    } else {
-      res.status(404).json({ message: "Please provide username!" });
-    }
-  } catch (err) {
-    res.status(500).json({ message: "Somthing went wrong" });
-  }
-});
+app.use("/api/auth", authRoute);
+app.use("/api/chat", chatRoute);
+app.use("/api/user", userRoute);
+app.use("/api/message", messageRoute);
 
 server.listen(3001, () => console.log("Listneing on port 3001"));

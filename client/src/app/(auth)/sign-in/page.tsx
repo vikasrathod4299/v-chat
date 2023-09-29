@@ -20,7 +20,7 @@ const SignIn = () => {
   const { mutate: signIn, isLoading } = useMutation({
     mutationFn: async (data: LoginUser) => {
       const { data: user } = await axios.post(
-        "http://localhost:3001/api/auth/login",
+        "http://192.168.211.136:3001/api/auth/login",
         data
       );
       return user;

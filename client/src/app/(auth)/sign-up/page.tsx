@@ -5,7 +5,8 @@ import { useForm } from "react-hook-form";
 import Link from "next/link";
 import type { RegisterUser } from "@/lib/types";
 import { useMutation } from "react-query";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
+import { signUpApiCall } from "@/lib/apiCalls";
 
 const SignUp = () => {
   const {
@@ -16,31 +17,18 @@ const SignUp = () => {
   } = useForm<RegisterUser>({});
 
   const { mutate: signUp, isLoading } = useMutation({
-    mutationFn: async (data: RegisterUser) => {
-      const { data: user } = await axios.post(
-        "http://localhost:3001/api/auth/register",
-        data
-      );
-      return user;
-    },
+    mutationFn: signUpApiCall,
     onSuccess: (data) => {
-      alert(`${data.username} is registerd successfully.`);
+      alert(`${data.data.first_name} is registerd successfully.`);
     },
-
     onError: (err: AxiosError) => {
-      const responseData = err.response?.data as { message?: string };
-      if (err.response && responseData) {
-        alert(responseData);
-      } else {
-        alert(err.message);
-      }
+      const responseData = err.response?.data;
+      alert(responseData);
     },
   });
 
   const onSubmit = (data: RegisterUser) => {
     const { confirm_password, ...rest } = data;
-    console.log(rest);
-
     signUp(rest);
   };
 
