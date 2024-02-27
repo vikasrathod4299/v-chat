@@ -1,6 +1,5 @@
 "use client";
 import React, { FC } from "react";
-import { Avatar, AvatarFallback } from "./ui/avatar";
 import { useRouter } from "next/navigation";
 import { useQuery } from "react-query";
 import { User } from "@/lib/types";
@@ -38,10 +37,13 @@ const ChatBox: FC<ChatBoxProps> = ({ id, userId, userDetails }) => {
   };
 
   return (
-    <div className="cursor-pointer" onClick={handleClick}>
-      <div className="flex w-full h-18 gap-x-4 items-center m-2">
+    <div
+      className="cursor-pointer border border-t-0 border-l-0 border-r-0 border-slate-500/10"
+      onClick={handleClick}
+    >
+      <div className="flex gap-x-4 items-center m-2">
         <UserAvatar userDetails={userDetails} />
-        <div className="pt-1">
+        <div>
           <p className="font-bold text-sm">{userDetails.username}</p>
           <p className="py-1 text-xs overflow-hidden overflow-ellipsis max-h-10">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis
@@ -51,7 +53,6 @@ const ChatBox: FC<ChatBoxProps> = ({ id, userId, userDetails }) => {
           </p>
         </div>
       </div>
-      <hr />
     </div>
   );
 };

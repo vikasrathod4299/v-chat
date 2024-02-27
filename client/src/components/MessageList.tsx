@@ -25,8 +25,8 @@ const MessageList: FC<MesssageListProps> = ({ messages }) => {
             </div>
 
             <div
-              className={`chat-bubble ${
-                user?.id !== item.userId && "bg-indigo-500"
+              className={`chat-bubble backdrop-blur-md ${
+                user?.id !== item.userId ? "bg-indigo-500" : "bg-pink-500"
               }`}
             >
               {item.content}

@@ -1,10 +1,10 @@
-import clsx from "clsx";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Provider from "@/components/Provider";
 import AuthProvider from "@/hooks/useAuth";
 import SocketProvider from "@/hooks/useSocket";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,11 +19,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={cn(inter.className)}>
       <AuthProvider>
         <Provider>
           <SocketProvider>
-            <body className={clsx(inter.className, "h-screen")}>
+            <body
+              className={
+                "min-h-screen bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400"
+              }
+            >
               {children}
             </body>
           </SocketProvider>

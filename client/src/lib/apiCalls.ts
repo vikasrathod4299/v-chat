@@ -69,5 +69,5 @@ export const fetchChatByUserId: QueryFunction<
   [string, string]
 > = async ({ queryKey }) => {
   const [kez, userId] = queryKey;
-  return await apiClient.get(`http://192.168.211.136:3001/api/chat/${userId}`);
+  return await apiClient.get(`/chat/${userId}`);
 };

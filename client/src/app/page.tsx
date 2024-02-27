@@ -1,6 +1,8 @@
 "use client";
 import ChatList from "@/components/ChatList";
 import Navbar from "@/components/Navbar";
+import ChatBoxSkeleton from "@/components/loaders/ChatBoxSkeleton";
+import SkeletonLoader from "@/components/loaders/SkeletonLoader";
 import { useAuth } from "@/hooks/useAuth";
 import { useSocket } from "@/hooks/useSocket";
 import { getAllchats } from "@/lib/apiCalls";
@@ -38,7 +40,7 @@ export default function Home() {
   useEffect(() => {
     if (!socket) return;
     socket?.on("connected", onConnect);
-    socket?.on("NewChat", newChat);
+    socket?.on(" ", newChat);
   }, [socket, newChat]);
 
   if (!user) {
@@ -46,12 +48,22 @@ export default function Home() {
     return;
   }
 
-  console.log(chats);
-
   return (
-    <main className="flex h-screen flex-col md:container">
+    <main className="min-h-screen overflow-y-auto flex flex-col bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-400 md:container">
       <Navbar isMe={true} userDetails={user} />
-      <ChatList chats={chats?.data} />
+      <div className="h-full mt-20">
+        {chats ? (
+          <ChatList chats={chats.data} />
+        ) : (
+          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => {
+            return (
+              <SkeletonLoader key={item}>
+                <ChatBoxSkeleton />
+              </SkeletonLoader>
+            );
+          })
+        )}
+      </div>
     </main>
   );
 }

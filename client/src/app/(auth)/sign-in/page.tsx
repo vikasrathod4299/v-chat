@@ -20,7 +20,7 @@ const SignIn = () => {
   const { mutate: signIn, isLoading } = useMutation({
     mutationFn: async (data: LoginUser) => {
       const { data: user } = await axios.post(
-        "http://192.168.211.136:3001/api/auth/login",
+        "http://localhost:3001/api/auth/login",
         data
       );
       return user;
@@ -38,6 +38,7 @@ const SignIn = () => {
   const onSubmit = (data: LoginUser) => {
     signIn(data);
   };
+
   return (
     <form className="flex flex-col gap-y-4" onSubmit={handleSubmit(onSubmit)}>
       <p className="px-2 tracking-widest font-light text-xl">Log in</p>
