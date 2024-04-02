@@ -34,4 +34,4 @@ app.use("/api/chat", chatRoute);
 app.use("/api/user", userRoute);
 app.use("/api/message", messageRoute);
 
-server.listen(80, () => console.log("Listneing on port 3001"));
+server.listen(3001, () => console.log("Listneing on port 3001"));
