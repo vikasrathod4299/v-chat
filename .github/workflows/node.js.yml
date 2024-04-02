@@ -32,5 +32,5 @@ jobs:
     - name: Start Backend Server with PM2
       run: |
         cd backend
-        pm2 restart backend.js
+        pm2 restart backend
 
