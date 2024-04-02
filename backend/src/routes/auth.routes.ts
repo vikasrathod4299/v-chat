@@ -12,7 +12,6 @@ router.post("/login", async (req: Request, res: Response) => {
     const user = await prisma.user.findFirst({
       where: { username: username, password: password },
     });
-    console.log(user);
     if (user) {
       const access_token = jwt.sign(
         { id: user.id, username: user.username, email: user.email },

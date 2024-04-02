@@ -4,14 +4,14 @@ import { LocalStorage } from "./utils";
 import { Message, RegisterUser, User } from "./types";
 
 const apiClient = axios.create({
-  baseURL: process.env.SERVER_URL,
+  baseURL: process.,
 });
 
 apiClient.interceptors.request.use(
   function (config) {
     const user = LocalStorage.get("user");
 
-    config.headers.Authorization = user?.access_token;
+    config.headers.Authorization = user?.token;
 
     return config;
   },
@@ -31,7 +31,7 @@ export const searchUsers: QueryFunction<
   [string, string]
 > = async ({ queryKey }) => {
   const [_, params] = queryKey;
-  return await apiClient.get(`/user/searchUser/${params}`);
+  return await  .get(`/user/searchUser/${params}`);
 };
 
 export const getAllchats: QueryFunction<
